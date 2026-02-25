@@ -1,12 +1,15 @@
 import sys
+from DataStructures.List import array_list as al
+from DataStructures.List import single_linked_list as sl
+from App import logic as l
+from tabulate import tabulate
 
 
 def new_logic():
     """
         Se crea una instancia del controlador
     """
-    #TODO: Llamar la función de la lógica donde se crean las estructuras de datos
-    pass
+    return l.new_logic()
 
 def print_menu():
     print("Bienvenido")
@@ -19,20 +22,97 @@ def print_menu():
     print("6- Ejecutar Requerimiento 6")
     print("7- Salir")
 
-def load_data(control):
+def print_load_data(control, size):
     """
     Carga los datos
     """
-    #TODO: Realizar la carga de datos
-    pass
+    data, dtime, min_precio, max_precio = l.load_data(control, size)
+    size = al.size(data["computer"])
+    primeros = al.sub_list(data["computer"], 0, 5)
+    ultimos = al.sub_list(data["computer"], size-5, size)
 
 
-def print_data(control, id):
-    """
-        Función que imprime un dato dado su ID
-    """
-    #TODO: Realizar la función para imprimir un elemento
-    pass
+    # ===== Resumen de carga =====
+    print("\n" + "=" * 80)
+    print("RESUMEN DE CARGA")
+    print("=" * 80)
+
+    resumen = [
+        ["Tiempo de carga (ms)", round(dtime,2)],
+        ["Total computadores cargados", size],
+    ]
+
+    print(tabulate(resumen, headers=["Campo", "Valor"], tablefmt="fancy_grid"))
+
+    # ===== Mayor precio (formato visual tipo "celdas combinadas") =====
+    print("\n" + "-" * 80)
+    print("MAYOR PRECIO")
+    print("-" * 80)
+
+    rows_mayor = [
+        ["Modelo", max_precio["model"]],
+        ["Marca", max_precio["brand"]],
+        ["Año", max_precio["release_year"]],
+        ["OS", max_precio["os"]],
+        ["Precio", max_precio["price"]],
+    ]
+
+    print(tabulate(rows_mayor, tablefmt="fancy_grid"))
+
+    # ===== Menor precio (mismo formato) =====
+    print("\n" + "-" * 80)
+    print("MENOR PRECIO")
+    print("-" * 80)
+
+    rows_menor = [
+        ["Modelo", min_precio["model"]],
+        ["Marca", min_precio["brand"]],
+        ["Año", min_precio["release_year"]],
+        ["OS", min_precio["os"]],
+        ["Precio", min_precio["price"]],
+    ]
+
+    print(tabulate(rows_menor, tablefmt="fancy_grid"))
+
+    # ===== Primeros 5 =====
+    print("\n" + "=" * 80)
+    print("PRIMEROS 5 REGISTROS")
+    print("=" * 80)
+
+    headers = ["Modelo", "Marca", "Año", "CPU", "GPU", "Precio"]
+    rows_primeros = []
+
+    for comp in al.to_py_list(primeros):
+        rows_primeros.append([
+            comp["model"],
+            comp["brand"],
+            comp["release_year"],
+            comp["cpu_brand"],
+            comp["gpu_brand"],
+            comp["price"]
+        ])
+
+    print(tabulate(rows_primeros, headers=headers, tablefmt="fancy_grid", showindex=False))
+
+    # ===== Últimos 5 =====
+    print("\n" + "=" * 80)
+    print("ÚLTIMOS 5 REGISTROS")
+    print("=" * 80)
+
+    rows_ultimos = []
+
+    for comp in al.to_py_list(ultimos):
+        rows_ultimos.append([
+            comp["model"],
+            comp["brand"],
+            comp["release_year"],
+            comp["cpu_brand"],
+            comp["gpu_brand"],
+            comp["price"]
+        ])
+
+    print(tabulate(rows_ultimos, headers=headers, tablefmt="fancy_grid", showindex=False))
+    return data
 
 def print_req_1(control):
     """
