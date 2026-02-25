@@ -118,8 +118,22 @@ def print_req_1(control):
     """
         Función que imprime la solución del Requerimiento 1 en consola
     """
-    # TODO: Imprimir el resultado del requerimiento 1
-    pass
+    while True:
+        marca = input("Ingrese la marca del computador: ").lower()
+        if marca in control["brand"]:
+            break
+        print("Marca no encontrada, vuelva a ingresar.\n")
+    
+    lista_estadisticas, lista_modelos = l.req_1(control, marca)
+    print("\n" + "=" * 80)
+    print("RESULTADO REQUERIMIENTO 1")
+    print("=" * 80)
+    print(tabulate(lista_estadisticas, headers=["Campo", "Valor"], tablefmt="fancy_grid"))
+    print("\n" + "-" * 80)
+    print("MODELOS EXTREMOS POR PRECIO")
+    print("-" * 80)
+    print(tabulate(lista_modelos, headers=["Tipo", "Modelo", "Precio"], tablefmt="fancy_grid"))
+    return control
 
 
 def print_req_2(control):

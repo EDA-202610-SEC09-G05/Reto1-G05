@@ -84,13 +84,118 @@ def load_brands_cpu(catalog, comp):
 # Funciones de consulta sobre el catálogo
 
 
-def req_1(catalog):
+def req_1(catalog, marca):
     """
     Retorna el resultado del requerimiento 1
     """
-    # TODO: Modificar el requerimiento 1
-   
-    pass
+    inicio = get_time()
+    lista = catalog["brand"][marca]
+    size = sl.size(lista)
+    nodo = lista["first"]
+    comp = n.get_info(nodo)
+    
+    max_precio = comp
+    min_precio = comp
+    max_ram = float(comp["ram_gb"])
+    min_ram = float(comp["ram_gb"])
+    max_vram = float(comp["vram_gb"])
+    min_vram = float(comp["vram_gb"])
+    max_nucleos = float(comp["cpu_cores"])
+    min_nucleos = float(comp["cpu_cores"])
+    max_year = int(comp["release_year"])
+    min_year = int(comp["release_year"])
+    
+    total_precio = 0
+    total_ram = 0
+    total_vram = 0
+    total_nucleos = 0
+    total_year = 0
+    
+    for _ in range(size-1):
+        
+        if float(comp["price"]) < float(min_precio["price"]):
+            min_precio = comp
+        elif float(comp["price"]) == float(max_precio["price"]):
+                max_precio = comp if float(comp["weight_kg"]) < float(max_precio["weight_kg"]) else max_precio
+        if float(comp["price"]) > float(max_precio["price"]):
+            max_precio = comp
+        elif float(comp["price"]) == float(min_precio["price"]):
+                min_precio = comp if float(comp["weight_kg"]) < float(min_precio["weight_kg"]) else min_precio
+        if float(comp["ram_gb"]) < min_ram:
+            min_ram = float(comp["ram_gb"])
+        if float(comp["ram_gb"]) > max_ram:
+            max_ram = float(comp["ram_gb"])
+        if float(comp["vram_gb"]) < min_vram:
+            min_vram = float(comp["vram_gb"])
+        if float(comp["vram_gb"]) > max_vram:
+            max_vram = float(comp["vram_gb"])
+        if float(comp["cpu_cores"]) < min_nucleos:
+            min_nucleos = float(comp["cpu_cores"])
+        if float(comp["cpu_cores"]) > max_nucleos:
+            max_nucleos = float(comp["cpu_cores"])
+        if int(comp["release_year"]) < min_year:
+            min_year = int(comp["release_year"])
+        if int(comp["release_year"]) > max_year:
+            max_year = int(comp["release_year"])
+        
+        total_precio += float(comp["price"])
+        total_ram += float(comp["ram_gb"])
+        total_vram += float(comp["vram_gb"])
+        total_nucleos += int(comp["cpu_cores"])
+        total_year += int(comp["release_year"])
+        
+        nodo = n.get_next(nodo)
+        comp = n.get_info(nodo)
+        
+    if size > 0:
+        promedio_precio = round(total_precio/size, 2)
+        promedio_ram = round(total_ram/size, 2)
+        promedio_vram = round(total_vram/size, 2)
+        promedio_nucleos = round(total_nucleos/size, 2)
+        promedio_year = round(total_year/size)
+    else:
+        promedio_precio = 0
+        promedio_ram = 0
+        promedio_vram = 0
+        promedio_nucleos = 0
+        promedio_year = 0
+        max_precio = {"price": 0}
+        min_precio = {"price": 0}
+        max_ram = 0
+        min_ram = 0
+        max_vram = 0
+        min_vram = 0
+        max_nucleos = 0
+        min_nucleos = 0
+        max_year = 0
+        min_year = 0
+    
+    lista_estadisticas = [
+    ["Tiempo de ejecución (ms)", delta_time(inicio, get_time())],
+    ["Total computadores marca", size],
+    ["Precio promedio", promedio_precio],
+    ["Precio mínimo", float(min_precio["price"])],
+    ["Precio máximo", float(max_precio["price"])],
+    ["RAM promedio", promedio_ram],
+    ["RAM mínima", min_ram],
+    ["RAM máxima", max_ram],
+    ["VRAM promedio", promedio_vram],
+    ["VRAM mínima", min_vram],
+    ["VRAM máxima", max_vram],
+    ["CPU cores promedio", promedio_nucleos],
+    ["CPU cores mínimo", min_nucleos],
+    ["CPU cores máximo", max_nucleos],
+    ["Año promedio", promedio_year],
+    ["Año mínimo", min_year],
+    ["Año máximo", max_year]
+    ]
+
+    lista_modelos = [
+        ["Modelo mayor precio", max_precio["model"], float(max_precio["price"])],
+        ["Modelo menor precio", min_precio["model"], float(min_precio["price"])]
+    ]
+
+    return lista_estadisticas, lista_modelos
 
 
 def req_2(catalog):
