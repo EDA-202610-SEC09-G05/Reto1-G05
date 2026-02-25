@@ -465,6 +465,42 @@ def change_info(my_list, pos, new_info):
     current["info"] = new_info
     return my_list
 
+def add_number(my_list, pos, number):
+    """
+    Agrega un número a la información de un elemento en la posición dada.
+
+    Parameters
+    ----------
+    my_list : dict
+        Lista enlazada a modificar.
+    number : int | float
+        Número a agregar a la información actual.
+    pos : int
+        Posición del elemento a modificar.
+
+    Returns
+    -------
+    dict
+        Lista con la información modificada.
+
+    Raises
+    ------
+    IndexError
+        Si la posición no es válida, lanza:
+        IndexError("list index out of range")
+    """
+    if pos < 0 or pos >= size(my_list):
+        raise IndexError("list index out of range")
+
+    current = my_list["first"]
+    i = 0
+    while i < pos:
+        current = current["next"]
+        i += 1
+
+    current["info"] += number
+    return my_list
+
 
 def exchange(my_list, pos_1, pos_2):
     """
@@ -625,3 +661,24 @@ def to_py_list(my_list):
         current = current["next"]
 
     return py_list
+
+def to_sl_list(py_list):
+    """
+    Convierte una lista Python a una lista enlazada simple.
+
+    Los elementos se insertan en el mismo orden en que aparecen en la lista.
+
+    Parameters
+    ----------
+    py_list : list
+        Lista Python de referencia.
+
+    Returns
+    -------
+    dict
+        Lista enlazada con los elementos de la lista Python.
+    """
+    sl_list = new_list()
+    for element in py_list:
+        add_last(sl_list, element)
+    return sl_list
