@@ -187,8 +187,28 @@ def print_req_5(control):
     """
         Función que imprime la solución del Requerimiento 5 en consola
     """
-    # TODO: Imprimir el resultado del requerimiento 5
-    pass
+    while True:
+        resolucion = input("Ingrese la resolución (ej: 1920x1080): ")
+        bool_input = input("Filtro por (CARO/BARATO): ").lower()
+        year_min = input("Ingrese el año mínimo: ")
+        year_max = input("Ingrese el año máximo: ")
+        if s.is_in(control["resolution"], resolucion) and bool_input in ["caro", "barato"] and year_min.isdigit() and year_max.isdigit() and int(year_min) <= int(year_max):
+            break
+        print("Resolución o filtro o año no válida, vuelva a ingresar.\n")
+    
+    boolean = True if bool_input == "caro" else False
+    lista_estadisticas, precio = l.req_5(control, boolean, resolucion, int(year_min), int(year_max))
+    
+    print("\n" + "=" * 80)
+    print("RESULTADO REQUERIMIENTO 5")
+    print("=" * 80)
+    print(tabulate(lista_estadisticas, headers=["Campo", "Valor"], tablefmt="fancy_grid"))
+    print("\n" + "-" * 80)
+    print("COMPUTADOR MAS CARO" if boolean else "COMPUTADOR MÁS BARATO")
+    print("-" * 80)
+    print(tabulate(precio, tablefmt="fancy_grid"))
+
+    return control
 
 
 def print_req_6(control):
