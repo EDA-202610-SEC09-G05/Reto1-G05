@@ -179,8 +179,27 @@ def print_req_4(control):
     """
         Función que imprime la solución del Requerimiento 4 en consola
     """
-    # TODO: Imprimir el resultado del requerimiento 4
-    pass
+    while True:
+        cpu_brand = input("Ingrese la marca de la CPU: ").lower()
+        gpu_brand = input("Ingrese la marca de la GPU: ").lower()
+        if cpu_brand in control["brandCPU"] and s.is_in(control["brandGPU"], gpu_brand):
+            break
+        print("Marca no válida, vuelva a ingresar.\n")
+    lista_estadisticas, top1, top2 = l.req_4(control, cpu_brand, gpu_brand)
+    print("\n" + "=" * 80)
+    print("RESULTADO REQUERIMIENTO 4")
+    print("=" * 80)
+    print(tabulate(lista_estadisticas, headers=["Campo", "Valor"], tablefmt="fancy_grid"))
+    print("\n" + "-" * 80)
+    print("TOP 1 COMPUTADOR")
+    print("-" * 80)
+    print(tabulate(top1, tablefmt="fancy_grid"))
+    print("\n" + "-" * 80)
+    print("TOP 2 COMPUTADOR")
+    print("-" * 80)
+    print(tabulate(top2, tablefmt="fancy_grid"))
+    
+    return control
 
 
 def print_req_5(control):

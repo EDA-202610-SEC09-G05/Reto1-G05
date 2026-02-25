@@ -311,12 +311,76 @@ def req_3(catalog):
     pass
 
 
-def req_4(catalog):
+def req_4(catalog, cpu_brand, gpu_brand):
     """
     Retorna el resultado del requerimiento 4
     """
-    # TODO: Modificar el requerimiento 4
-    pass
+    inicio = get_time()
+    lista = al.to_py_list(catalog["brandCPU"][cpu_brand])
+    
+    mayor_precio1 = {"price":float("-inf")}
+    mayor_precio2 = {"price":float("-inf")}
+    
+    size = 0 
+    total_precio = 0
+    total_ram = 0
+    total_vram = 0
+    total_boost = 0
+    
+    for comp in lista:
+        if comp["gpu_brand"].lower() == gpu_brand:
+            size += 1
+            total_precio += float(comp["price"])
+            total_ram += float(comp["ram_gb"])
+            total_vram += float(comp["vram_gb"])
+            total_boost += float(comp["cpu_boost_ghz"])
+            
+            if float(comp["price"]) > float(mayor_precio1["price"]) or (float(comp["price"]) == float(mayor_precio1["price"]) and float(comp["weight_kg"]) < float(mayor_precio1["weight_kg"])):
+                mayor_precio2 = mayor_precio1
+                mayor_precio1 = comp
+            if (float(comp["price"]) > float(mayor_precio2["price"]) and comp != mayor_precio1) or (float(comp["price"]) == float(mayor_precio2["price"]) and float(comp["weight_kg"]) < float(mayor_precio2["weight_kg"])):
+                mayor_precio2 = comp
+
+    if size > 0:
+        promedio_precio = round(total_precio/size, 2)
+        promedio_ram = round(total_ram/size, 2)
+        promedio_vram = round(total_vram/size, 2)
+        promedio_boost = round(total_boost/size, 2)
+    else:
+        promedio_precio = 0
+        promedio_ram = 0
+        promedio_vram = 0
+        promedio_boost = 0
+        mayor_precio1 = {"model": "N/A", "brand": "N/A", "release_year": "N/A", "cpu_model": "N/A", "price": "N/A"}
+        mayor_precio2 = {"model": "N/A", "brand": "N/A", "release_year": "N/A", "cpu_model": "N/A", "price": "N/A"}
+
+    lista_estadisticas = [
+        ["Tiempo de ejecución (ms)", delta_time(inicio, get_time())],
+        ["Total computadores", size],
+        ["Precio promedio", promedio_precio],
+        ["RAM promedio", promedio_ram],
+        ["VRAM promedio", promedio_vram],
+        ["Boost Clock promedio", promedio_boost]
+    ]
+    
+    top1 = [
+        ["Modelo", mayor_precio1["model"]],
+        ["Marca", mayor_precio1["brand"]],
+        ["Año", mayor_precio1["release_year"]],
+        ["Modelo CPU", mayor_precio1["cpu_model"]],
+        ["Precio", mayor_precio1["price"]]
+    ]
+    
+    top2 = [
+        ["Modelo", mayor_precio2["model"]],
+        ["Marca", mayor_precio2["brand"]],
+        ["Año", mayor_precio2["release_year"]],
+        ["Modelo CPU", mayor_precio2["cpu_model"]],
+        ["Precio", mayor_precio2["price"]]
+    ]
+
+    return lista_estadisticas, top1, top2
+
 
 
 def req_5(catalog):
