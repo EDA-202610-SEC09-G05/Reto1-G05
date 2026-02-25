@@ -89,6 +89,7 @@ def req_1(catalog):
     Retorna el resultado del requerimiento 1
     """
     # TODO: Modificar el requerimiento 1
+   
     pass
 
 
@@ -96,7 +97,104 @@ def req_2(catalog):
     """
     Retorna el resultado del requerimiento 2
     """
-    # TODO: Modificar el requerimiento 2
+    inicio = get_time()
+    lista = al.to_py_list(catalog["computer"])
+    
+    max_precio = {"price":float("-inf")}
+    min_precio = {"price":float("inf")}
+    max_year = {"release_year": "2018"}
+    
+    total_precio = 0
+    total_ram = 0
+    total_vram = 0
+    size = 0
+    
+    for comp in lista:
+        if float(comp["price"]) >= float(pmin) and float(comp["price"]) <= float(pmax):
+            if float(comp["price"]) < float(min_precio["price"]):
+                min_precio = comp
+            if float(comp["price"]) > float(max_precio["price"]):
+                max_precio = comp
+            if int(comp["release_year"]) > int(max_year["release_year"]):
+                max_year = comp
+            total_precio += float(comp["price"])
+            total_ram += float(comp["ram_gb"])
+            total_vram += float(comp["vram_gb"])
+            size += 1
+    
+    if size > 0:
+        promedio_precio = round(total_precio/size, 2)
+        promedio_ram = round(total_ram/size, 2)
+        promedio_vram = round(total_vram/size, 2)
+    else:
+        promedio_precio = 0
+        promedio_ram = 0
+        promedio_vram = 0
+    
+    lista_estadisticas = [
+        ["Tiempo de ejecución (ms)", delta_time(inicio, get_time())],
+        ["Total computadores en rango", size],
+        ["Precio promedio", promedio_precio],
+        ["RAM promedio", promedio_ram],
+        ["VRAM promedio", promedio_vram]
+    ]
+    
+    if size>0:
+        menor_precio = [
+            ["Modelo", min_precio["model"]],
+            ["Marca", min_precio["brand"]],
+            ["Año", min_precio["release_year"]],
+            ["CPU", min_precio["cpu_brand"]],
+            ["GPU", min_precio["gpu_brand"]],
+            ["Precio", min_precio["price"]],
+        ]
+        
+        mayor_precio = [
+            ["Modelo", max_precio["model"]],
+            ["Marca", max_precio["brand"]],
+            ["Año", max_precio["release_year"]],
+            ["CPU", max_precio["cpu_brand"]],
+            ["GPU", max_precio["gpu_brand"]],
+            ["Precio", max_precio["price"]],
+        ]
+        
+        mas_moderno = [
+            ["Modelo", max_year["model"]],
+            ["Marca", max_year["brand"]],
+            ["Año", max_year["release_year"]],
+            ["CPU", max_year["cpu_brand"]],
+            ["GPU", max_year["gpu_brand"]],
+            ["Precio", max_year["price"]],
+        ]
+    else:
+        menor_precio = [
+            ["Modelo", "N/A"],
+            ["Marca", "N/A"],
+            ["Año", "N/A"],
+            ["CPU", "N/A"],
+            ["GPU", "N/A"],
+            ["Precio", "N/A"],
+        ]
+        
+        mayor_precio = [
+            ["Modelo", "N/A"],
+            ["Marca", "N/A"],
+            ["Año", "N/A"],
+            ["CPU", "N/A"],
+            ["GPU", "N/A"],
+            ["Precio", "N/A"],
+        ]
+        
+        mas_moderno = [
+            ["Modelo", "N/A"],
+            ["Marca", "N/A"],
+            ["Año", "N/A"],
+            ["CPU", "N/A"],
+            ["GPU", "N/A"],
+            ["Precio", "N/A"],
+        ]
+    
+    return lista_estadisticas, menor_precio, mayor_precio, mas_moderno
     pass
 
 
