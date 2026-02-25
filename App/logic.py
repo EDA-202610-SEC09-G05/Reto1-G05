@@ -303,12 +303,79 @@ def req_2(catalog):
     pass
 
 
-def req_3(catalog):
+def req_3(catalog, cpu_brand, cpu_tier):
     """
     Retorna el resultado del requerimiento 3
     """
-    # TODO: Modificar el requerimiento 3
-    pass
+    inicio = get_time()
+    lista = al.to_py_list(catalog["brandCPU"][cpu_brand])
+    
+    total_precio = 0
+    total_ram = 0
+    total_vram = 0
+    total_threads = 0
+    size = 0
+    
+    freciencia_gpu = {}
+    freciencia_year = {}
+    gpu_boolean = True
+    year_boolean = True
+    
+    for comp in lista:
+        if comp["cpu_tier"] == cpu_tier:
+            total_precio += float(comp["price"])
+            total_ram += float(comp["ram_gb"])
+            total_vram += float(comp["vram_gb"])
+            total_threads += int(comp["cpu_threads"])
+            size += 1
+            
+            gpu = comp["gpu_brand"]
+            if gpu not in freciencia_gpu:
+                freciencia_gpu[gpu] = 0
+                if gpu_boolean:
+                    mas_frecuente_gpu = comp
+                    gpu_boolean = False
+            freciencia_gpu[gpu] += 1
+            if freciencia_gpu[mas_frecuente_gpu["gpu_brand"]] < freciencia_gpu[gpu]:
+                mas_frecuente_gpu = comp
+            
+            year = comp["release_year"]
+            if year not in freciencia_year:
+                freciencia_year[year] = 0
+                if year_boolean:
+                    mas_frecuente_year = comp
+                    year_boolean = False
+            freciencia_year[year] += 1
+            if freciencia_year[mas_frecuente_year["release_year"]] < freciencia_year[year]:
+                mas_frecuente_year = comp
+
+    if size > 0:
+        promedio_precio = round(total_precio/size, 2)
+        promedio_ram = round(total_ram/size, 2)
+        promedio_vram = round(total_vram/size, 2)
+        promedio_threads = round(total_threads/size, 2)
+
+    else:
+        promedio_precio = 0
+        promedio_ram = 0
+        promedio_vram = 0
+        promedio_threads = 0
+        mas_frecuente_gpu = {"gpu_brand": "N/A"}
+        mas_frecuente_year = {"release_year": "N/A"}
+
+    lista_estadisticas = [
+        ["Tiempo de ejecución (ms)", delta_time(inicio, get_time())],
+        ["Total computadores", size],
+        ["Precio promedio", promedio_precio],
+        ["RAM promedio", promedio_ram],
+        ["VRAM promedio", promedio_vram],
+        ["Threads promedio", promedio_threads],
+        ["GPU más frecuente", mas_frecuente_gpu["gpu_brand"]],
+        ["Año más frecuente", mas_frecuente_year["release_year"]]
+    ]
+    
+
+    return lista_estadisticas
 
 
 def req_4(catalog):

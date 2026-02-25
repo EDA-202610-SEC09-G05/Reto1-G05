@@ -171,8 +171,19 @@ def print_req_3(control):
     """
         Función que imprime la solución del Requerimiento 3 en consola
     """
-    # TODO: Imprimir el resultado del requerimiento 3
-    pass
+    while True:
+        cpu_brand = input("Ingrese la marca de la CPU: ").lower()
+        cpu_tier = input("Ingrese el tier de la CPU: ")
+        if cpu_brand in control["brandCPU"] and cpu_tier in ["1", "2", "3", "4", "5", "6"]:
+            break
+        print("Marca o tier no válidos, vuelva a ingresar.\n")
+    lista_estadisticas = l.req_3(control, cpu_brand, cpu_tier)
+    print("\n" + "=" * 80)
+    print("RESULTADO REQUERIMIENTO 3")
+    print("=" * 80)
+    print(tabulate(lista_estadisticas, headers=["Campo", "Valor"], tablefmt="fancy_grid"))
+    
+    return control
 
 
 def print_req_4(control):
