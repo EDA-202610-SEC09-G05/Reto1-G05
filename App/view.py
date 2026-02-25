@@ -140,8 +140,31 @@ def print_req_2(control):
     """
         Función que imprime la solución del Requerimiento 2 en consola
     """
-    # TODO: Imprimir el resultado del requerimiento 2
-    pass
+    while True:
+        pmin = input("Ingrese el precio mínimo: ")
+        pmax = input("Ingrese el precio máximo: ")
+        if pmin.replace(".","",1).isdigit() and pmax.replace(".","",1).isdigit() and float(pmin) <= float(pmax):
+            break
+        print("Precios no válidos, vuelva a ingresar.\n")
+    lista_estadisticas, menor_precio, mayor_precio, mas_moderno = l.req_2(control, pmin, pmax)
+    print("\n" + "=" * 80)
+    print("RESULTADO REQUERIMIENTO 2")
+    print("=" * 80)
+    print(tabulate(lista_estadisticas, headers=["Campo", "Valor"], tablefmt="fancy_grid"))
+    print("\n" + "-" * 80)
+    print("COMPUTADOR MENOR PRECIO")
+    print("-" * 80)
+    print(tabulate(menor_precio, tablefmt="fancy_grid"))
+    print("\n" + "-" * 80)
+    print("COMPUTADOR MAYOR PRECIO")
+    print("-" * 80)
+    print(tabulate(mayor_precio, tablefmt="fancy_grid"))
+    print("\n" + "-" * 80)
+    print("COMPUTADOR MÁS MODERNO")
+    print("-" * 80)
+    print(tabulate(mas_moderno, tablefmt="fancy_grid"))
+        
+    return control
 
 
 def print_req_3(control):
