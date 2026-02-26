@@ -245,8 +245,34 @@ def print_req_6(control):
     """
         Función que imprime la solución del Requerimiento 6 en consola
     """
-    # TODO: Imprimir el resultado del requerimiento 6
-    pass
+    while True:
+        year_min = input("Ingrese el año mínimo: ")
+        year_max = input("Ingrese el año máximo: ")
+        if year_min.isdigit() and year_max.isdigit() and int(year_min) <= int(year_max):
+            break
+        print("Año no válido, vuelva a ingresar.\n")
+ 
+    lista_estadisticas, mejor_os, os_estadisticas = l.req_6(control, int(year_min), int(year_max))
+    print("\n" + "=" * 80)
+    print("RESULTADO REQUERIMIENTO 6")
+    print("=" * 80)
+    print(tabulate(lista_estadisticas, headers=["Campo", "Valor"], tablefmt="fancy_grid"))
+    print("\n" + "-" * 80)
+    print("SISTEMA OPERATIVO MEJOR CLASSIFICADO")
+    print("-" * 80)
+    print(tabulate(mejor_os, headers=["Campo", "OS", "Cantidad", "Recaudo"], tablefmt="fancy_grid"))
+    print("\n" + "-" * 80)
+    print("ESTADÍSTICAS DE LOS SISTEMAS OPERATIVOS")
+    print("-" * 80)
+    print(tabulate(os_estadisticas, headers=["OS", "Precio Promedio", "Peso Promedio", "Computador mas Costoso", "Computador mas Barato"], tablefmt="fancy_grid", floatfmt=".2f"))
+
+    return control
+
+def tiempo(t):
+    """
+        Función que imprime el tiempo de ejecución de un requerimiento
+    """
+    print(f"Tiempo de ejecución: {t} ms")
 
 # Se crea la lógica asociado a la vista
 control = new_logic()

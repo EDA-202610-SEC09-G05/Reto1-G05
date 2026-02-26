@@ -517,12 +517,84 @@ def req_5(catalog):
     return lista_estadisticas, precio
     pass
 
-def req_6(catalog):
+def req_6(catalog, min_year, max_year):
     """
     Retorna el resultado del requerimiento 6
     """
-    # TODO: Modificar el requerimiento 6
-    pass
+    # dict OS : [total_count , total_precio, total_peso, comp_barato, comp_caro]
+    inicio = get_time()
+    min_year = min_year if min_year >=2018 else 2018
+    max_year = max_year if max_year <=2025 else 2025
+    year = catalog["year"]
+    sys_op = {}
+    mejor_os_precio = float("-inf")
+    mejor_os_uso = float("-inf")
+    mejor_os_precio_nombre = ""
+    mejor_os_uso_nombre = ""
+    size = 0
+    
+    for y in range(int(min_year), int(max_year)+1):
+        lista = year[str(y)]
+        nodo = lista["first"]
+        for _ in range(sl.size(lista)):
+            comp = n.get_info(nodo)
+            size += 1
+            
+            if comp["os"] not in sys_op:
+                sys_op[comp["os"]] = sl.to_sl_list([0, 0, 0, {"price": float("inf")}, {"price": float("-inf")}])
+            os_info = sys_op[comp["os"]]
+            sl.add_number(os_info, 0, 1)
+            sl.add_number(os_info, 1, float(comp["price"]))
+            sl.add_number(os_info, 2, float(comp["weight_kg"]))
+            if float(comp["price"]) < float(sl.get_element(os_info, 3)["price"]):
+                sl.change_info(os_info, 3, comp)
+            if float(comp["price"]) > float(sl.get_element(os_info, 4)["price"]):
+                sl.change_info(os_info, 4, comp)
+            nodo = n.get_next(nodo)
+    
+    for os, os_info in sys_op.items():
+        sl.add_last(os_info, sl.get_element(os_info, 1)/sl.get_element(os_info, 0))
+        sl.add_last(os_info, sl.get_element(os_info, 2)/sl.get_element(os_info, 0))
+        if sl.get_element(os_info, 1) > mejor_os_precio:
+            mejor_os_precio = sl.get_element(os_info, 1)
+            mejor_os_precio_nombre = os
+        if sl.get_element(os_info, 0) > mejor_os_uso:
+            mejor_os_uso = sl.get_element(os_info, 0)
+            mejor_os_uso_nombre = os
+
+    lista_estadisticas = [
+        ["Tiempo de ejecución (ms)", delta_time(inicio, get_time())],
+        ["Total computadores", size]
+    ]
+    mejor_os = [
+        ["OS mas usado", mejor_os_uso_nombre, mejor_os_uso, sl.get_element(sys_op[mejor_os_uso_nombre], 1)],
+        ["Os mas recaudo", mejor_os_precio_nombre, sl.get_element(sys_op[mejor_os_precio_nombre], 0), mejor_os_precio]
+    ]
+
+    os_estadisticas = [
+        [
+            os,
+            sl.get_element(os_info, 5),
+            sl.get_element(os_info, 6),
+            tabulate([
+                ["Modelo", sl.get_element(os_info, 4)["model"]],
+                ["Marca", sl.get_element(os_info, 4)["brand"]],
+                ["Año", sl.get_element(os_info, 4)["release_year"]],
+                ["CPU", sl.get_element(os_info, 4)["cpu_brand"]],
+                ["GPU", sl.get_element(os_info, 4)["gpu_brand"]],
+                ["Precio", sl.get_element(os_info, 4)["price"]]
+            ], tablefmt="fancy_grid"),
+            tabulate([
+                ["Modelo", sl.get_element(os_info, 3)["model"]],
+                ["Marca", sl.get_element(os_info, 3)["brand"]],
+                ["Año", sl.get_element(os_info, 3)["release_year"]],
+                ["CPU", sl.get_element(os_info, 3)["cpu_brand"]],
+                ["GPU", sl.get_element(os_info, 3)["gpu_brand"]],
+                ["Precio", sl.get_element(os_info, 3)["price"]]
+            ], tablefmt="fancy_grid")
+        ] for os, os_info in sys_op.items()
+    ]
+    return lista_estadisticas, mejor_os, os_estadisticas
 
 
 # Funciones para medir tiempos de ejecucion
