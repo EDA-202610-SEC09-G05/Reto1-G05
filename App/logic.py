@@ -1,10 +1,12 @@
 import time
 import csv
+from tabulate import tabulate
 from DataStructures.List import array_list as al
 from DataStructures.List import single_linked_list as sl
-from DataStructures.List import sort as s
+from DataStructures.List import list_node as n
+from DataStructures.Set import set as s
 
-def new_logic():
+def new_logic(): 
     """
     Crea el catalogo para almacenar las estructuras de datos
     """
@@ -12,7 +14,9 @@ def new_logic():
         "computer": al.new_list(),
         "brandCPU": {},
         "year": {},
-        "brand": {}
+        "brand": {},
+        "brandGPU": s.new_set(),
+        "resolution": s.new_set()
     }
     return catalog
 
@@ -36,6 +40,8 @@ def load_data(catalog, size):
         load_brands(catalog, comp)
         load_years(catalog, comp)
         load_brands_cpu(catalog, comp)
+        load_brands_gpu(catalog, comp)
+        load_resolutions(catalog, comp)
         
         if float(comp["price"]) < float(min_precio["price"]):
             min_precio = comp
@@ -50,7 +56,7 @@ def load_brands(catalog, comp):
     Carga las marcas de los computadores
     """
     brands = catalog["brand"]
-    brand = comp["brand"]
+    brand = comp["brand"].lower()
     
     if brand not in brands:
         brands[brand] = sl.new_list()
@@ -74,11 +80,31 @@ def load_brands_cpu(catalog, comp):
     Carga las marcas de los CPU de los computadores
     """
     brands = catalog["brandCPU"]
-    brand = comp["cpu_brand"]
+    brand = comp["cpu_brand"].lower()
     
     if brand not in brands:
         brands[brand] = al.new_list()
     al.add_last(brands[brand], comp)
+    return catalog
+
+def load_brands_gpu(catalog, comp):
+    """
+    Carga las marcas de los GPU de los computadores
+    """
+    brands = catalog["brandGPU"]
+    brand = comp["gpu_brand"].lower()
+    
+    s.add_element(brands, brand)
+    return catalog
+
+def load_resolutions(catalog, comp):
+    """
+    Carga las resoluciones de los computadores
+    """
+    resolutions = catalog["resolution"]
+    resolution = comp["resolution"]
+    
+    s.add_element(resolutions, resolution)
     return catalog
 
 # Funciones de consulta sobre el catálogo
@@ -198,7 +224,7 @@ def req_1(catalog, marca):
     return lista_estadisticas, lista_modelos
 
 
-def req_2(catalog):
+def req_2(catalog, pmin, pmax):
     """
     Retorna el resultado del requerimiento 2
     """
@@ -300,8 +326,6 @@ def req_2(catalog):
         ]
     
     return lista_estadisticas, menor_precio, mayor_precio, mas_moderno
-    pass
-
 
 def req_3(catalog, cpu_brand, cpu_tier):
     """
@@ -448,9 +472,7 @@ def req_4(catalog, cpu_brand, gpu_brand):
 
     return lista_estadisticas, top1, top2
 
-
-
-def req_5(catalog):
+def req_5(catalog, boolean, resolucion, min_year, max_year):
     """
     Retorna el resultado del requerimiento 5
     """
@@ -515,7 +537,6 @@ def req_5(catalog):
     ]
     
     return lista_estadisticas, precio
-    pass
 
 def req_6(catalog, min_year, max_year):
     """
@@ -596,7 +617,6 @@ def req_6(catalog, min_year, max_year):
     ]
     return lista_estadisticas, mejor_os, os_estadisticas
 
-
 # Funciones para medir tiempos de ejecucion
 
 def get_time():
@@ -611,4 +631,4 @@ def delta_time(start, end):
     devuelve la diferencia entre tiempos de procesamiento muestreados
     """
     elapsed = float(end - start)
-    return elapsed
+    return round(elapsed,2)

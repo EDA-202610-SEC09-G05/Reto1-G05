@@ -1,15 +1,15 @@
 import sys
-from DataStructures.List import array_list as al
-from DataStructures.List import single_linked_list as sl
-from App import logic as l
 from tabulate import tabulate
-
-
+from DataStructures.List import array_list as al
+from DataStructures.Set import set as s
+from App import logic as l
+ 
 def new_logic():
     """
         Se crea una instancia del controlador
     """
     return l.new_logic()
+    
 
 def print_menu():
     print("Bienvenido")
@@ -113,6 +113,7 @@ def print_load_data(control, size):
 
     print(tabulate(rows_ultimos, headers=headers, tablefmt="fancy_grid", showindex=False))
     return data
+
 
 def print_req_1(control):
     """
@@ -288,8 +289,17 @@ def main():
         print_menu()
         inputs = input('Seleccione una opción para continuar\n')
         if int(inputs) == 0:
+            while True:
+                opcion = input("Ingrese el número del tamaño de los datos a cargar: 1-small  2-medium  3-large ")
+                if opcion in ["1", "2", "3"]:
+                    break
+                print("Opción errónea, vuelva a elegir.\n")
             print("Cargando información de los archivos ....\n")
-            data = load_data(control)
+            
+            size = "small" if opcion == "1" else "medium" if opcion == "2" else "large"
+            print_load_data(control, size)
+            
+            
         elif int(inputs) == 1:
             print_req_1(control)
 
@@ -305,7 +315,7 @@ def main():
         elif int(inputs) == 5:
             print_req_5(control)
 
-        elif int(inputs) == 5:
+        elif int(inputs) == 6:
             print_req_6(control)
 
         elif int(inputs) == 7:
